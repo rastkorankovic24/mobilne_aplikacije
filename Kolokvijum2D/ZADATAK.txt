@@ -1,0 +1,76 @@
+================================================================================
+  KOLOKVIJUM 2D - VARIJANTA D
+  Paket: com.example.kolokvijum2d
+  API: GET https://dummy-json.mock.beeceptor.com/posts
+  FileProvider: com.example.kolokvijum2d.fileprovider
+================================================================================
+
+ZADATAK:
+
+1. LAYOUT
+   Na glavnom ekranu postavi sledeće elemente (jedan ispod drugog):
+   - TextView (prikaz lokacije)
+   - ImageButton (kamera)
+   - ImageView (pregled slike)
+   - Switch (postovi)
+   - Button (akcija / akcelerometar)
+
+2. LOKACIJA
+   Pri pokretanju aplikacije zatraži dozvolu za lokaciju i prikaži geografsku
+   širinu i dužinu u TextView-u.
+
+3. KAMERA I ŽIROSKOP
+   Klik na ImageButton otvara kameru. Nakon uspešnog slikanja prikaži sliku u
+   ImageView-u i prikaži Toast sa vrednostima žiroskopa (X, Y, Z).
+
+4. RETROFIT I BAZA
+   Kreiraj Post model, PostService (GET posts) i RetrofitClient sa baznim URL-om:
+   https://dummy-json.mock.beeceptor.com/
+   Kreiraj SQLite bazu (DatabaseHelper) za čuvanje postova.
+
+5. SWITCH ON
+   - Prvi put kada se Switch uključi: preuzmi postove sa API-ja i sačuvaj
+     prvih 5 postova u bazu.
+   - Svaki sledeći put kada se Switch uključi (baza nije prazna): prikaži Toast
+     sa naslovom prvog posta iz baze.
+   - Kada je Switch uključen, osveži prikaz lokacije u TextView-u.
+
+6. DUGME (BRISANJE)
+   Klik na Button briše prvi post iz baze. Ako je baza prazna (pre brisanja ili
+   posle brisanja poslednjeg posta), pošalji notifikaciju sa tekstom:
+   "Lista prazna!"
+
+7. AKCELEROMETAR
+   Vrednosti akcelerometra (X, Y, Z) prikazuj na tekstu Button-a.
+
+8. SWITCH OFF
+   Kada se Switch isključi:
+   - Sačuvaj trenutni tekst iz TextView-a u SharedPreferences pod ključem "tekst"
+   - Prikaži ime prvog kontakta iz telefonskog imenika u TextView-u
+
+9. DUGI KLIK NA IMAGEVIEW
+   Dugi klik (long click) na ImageView prikazuje Toast sa telom (body) prvog
+   posta iz baze podataka.
+
+================================================================================
+  DOZVOLE (AndroidManifest.xml)
+================================================================================
+
+  - INTERNET
+  - ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION
+  - CAMERA
+  - READ_CONTACTS
+  - POST_NOTIFICATIONS (Android 13+)
+  - FileProvider za kameru
+
+================================================================================
+  RAZLIKE U ODNOSU NA KOLOKVIJUM2 (varijanta D)
+================================================================================
+
+  - API URL: https://dummy-json.mock.beeceptor.com/posts
+  - Prvi Switch ON čuva 5 postova (ne 10)
+  - Prazna lista: notifikacija "Lista prazna!" (ne "Nema više postova!")
+  - Dugi klik na ImageView → Toast sa body prvog posta
+  - Paket i FileProvider: com.example.kolokvijum2d
+
+================================================================================

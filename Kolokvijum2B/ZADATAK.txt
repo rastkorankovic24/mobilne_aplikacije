@@ -1,0 +1,75 @@
+================================================================================
+  KOLOKVIJUM 2 - VARIJANTA B (Kolokvijum2B)
+  Paket: com.example.kolokvijum2b
+  FileProvider: com.example.kolokvijum2b.fileprovider
+================================================================================
+
+API:
+  GET https://dummy-json.mock.beeceptor.com/users
+
+MODEL (User.java):
+  id, name, company, username, email, address
+
+LAYOUT (activity_main.xml) - vertikalno, redom:
+  1. TextView        - lokacija
+  2. ImageButton     - kamera
+  3. ImageView       - pregled slike
+  4. CheckBox        - tekst "Sinhronizuj"
+  5. Switch          - korisnici
+  6. Button          - akcelerometar
+
+ZADACI:
+
+1. LOKACIJA
+   - Prikaži trenutnu lokaciju u TextView (FusedLocationProviderClient)
+   - Traži ACCESS_FINE_LOCATION dozvolu
+
+2. KAMERA + ŽIROSKOP
+   - ImageButton otvara kameru (ActivityResultLauncher)
+   - Slika se prikazuje u ImageView
+   - Posle uspešnog slikanja: Toast sa vrednostima žiroskopa (X, Y, Z)
+   - FileProvider: com.example.kolokvijum2b.fileprovider
+
+3. RETROFIT + BAZA
+   - UserService: GET users
+   - DatabaseHelper: tabela users sa poljima iz modela
+   - _id = AUTOINCREMENT primarni ključ u našoj bazi
+
+4. CHECKBOX + SWITCH
+   - Switch ON radi SAMO ako je CheckBox "Sinhronizuj" čekiran
+   - Ako nije čekiran: Toast "Označite sinhronizaciju" i vrati Switch na OFF
+
+5. SWITCH ON (sa čekiranim CheckBox-om)
+   - Prvi put (prazna baza): učitaj sa API-ja i sačuvaj 8 korisnika
+   - Sledeći put: Toast sa imenom (name) prvog korisnika u tabeli (ORDER BY _id ASC)
+
+6. DUGME (Button)
+   - Obriši POSLEDNJEG korisnika u tabeli (ORDER BY _id DESC)
+   - Ako je baza prazna: notifikacija "Baza je prazna!" + Toast
+
+7. AKCELEROMETAR
+   - Tekst na dugmetu se menja u realnom vremenu (X, Y, Z vrednosti)
+
+8. SWITCH OFF
+   - Sačuvaj trenutni tekst TextView-a u SharedPreferences pod ključem "tekst"
+   - Zameni TextView sa EMAIL adresom prvog kontakta
+     (ContactsContract.CommonDataKinds.Email, CONTACT_ID ASC)
+   - Traži READ_CONTACTS dozvolu
+
+FAJLOVI:
+  AndroidManifest.xml
+  res/layout/activity_main.xml
+  res/values/strings.xml (app_name = Kolokvijum2B)
+  User.java, UserService.java, RetrofitClient.java
+  DatabaseHelper.java, MainActivity.java
+
+PERMISIJE U MANIFESTU:
+  INTERNET, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION,
+  CAMERA, READ_CONTACTS, POST_NOTIFICATIONS
+
+TESTIRANJE:
+  - Emulator: postavi lokaciju, dodaj kontakt sa email-om
+  - Uključi internet za API poziv
+  - Dozvoli notifikacije (Android 13+)
+
+================================================================================

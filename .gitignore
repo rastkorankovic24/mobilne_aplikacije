@@ -1,0 +1,40 @@
+# Android / Gradle
+**/build/
+**/.gradle/
+**/local.properties
+**/.cxx/
+**/captures/
+**/output.json
+
+# Android Studio
+**/.idea/caches/
+**/.idea/libraries/
+**/.idea/shelf/
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+**/.idea/usage.statistics.xml
+**/.idea/dictionaries/
+**/.idea/deploymentTargetSelector.xml
+**/.idea/runConfigurations.xml
+**/.idea/gradle.xml
+**/.idea/compiler.xml
+**/.idea/misc.xml
+**/.idea/navEditor.xml
+**/.idea/assetWizardSettings.xml
+**/.idea/AndroidProjectSystem.xml
+**/.idea/modules.xml
+**/.idea/*.iml
+*.iml
+
+# Keystore / secrets
+**/*.jks
+**/*.keystore
+**/.env
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log

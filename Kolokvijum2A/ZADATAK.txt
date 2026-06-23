@@ -1,0 +1,58 @@
+KOLOKVIJUM 2 - VARIJANTA A (Kolokvijum2A)
+=========================================
+
+Paket: com.example.kolokvijum2a
+FileProvider: com.example.kolokvijum2a.fileprovider
+API: https://dummy-json.mock.beeceptor.com/ (endpoint: GET posts)
+
+ZADATAK
+-------
+
+1. LAYOUT (activity_main.xml)
+   Vertikalni raspored: TextView, EditText (hint: Pretraga), ImageButton,
+   ImageView, Switch, Button.
+
+2. LOKACIJA
+   Prikaži trenutnu lokaciju (širina i dužina) u TextView.
+   Koristi FusedLocationProviderClient i ActivityResultLauncher za dozvolu.
+
+3. KAMERA
+   ImageButton otvara kameru. Snimljena slika se prikazuje u ImageView.
+   Nakon uspešnog slikanja prikaži Toast sa vrednostima žiroskopa (X, Y, Z).
+
+4. MODEL I API
+   Klasa Product mapira JSON sa endpointa GET "posts":
+   - id -> id
+   - title -> title
+   - body -> description (@SerializedName("body"))
+   - comment_count -> price (@SerializedName("comment_count"))
+   - link -> brand (@SerializedName("link"))
+
+5. SWITCH ON
+   Prvi put kada se uključi Switch: preuzmi podatke sa API-ja i sačuvaj
+   12 proizvoda u SQLite bazu.
+   Svaki sledeći put kada se uključi Switch: prikaži Toast sa naslovom
+   (title) prvog proizvoda u bazi (sortirano po _id ASC).
+
+6. DUGME (Button)
+   Klik na dugme:
+   a) Prikaži Toast sa brojem proizvoda čiji naslov sadrži tekst iz EditText
+      polja (pretraga, bez obzira na velika/mala slova).
+      Prazan tekst = broj svih proizvoda u bazi.
+   b) Zatim obriši prvi proizvod iz baze (_id ASC).
+   c) Ako je baza prazna: pošalji notifikaciju "Nema proizvoda!".
+
+7. AKCELEROMETAR
+   Tekst na dugmetu u realnom vremenu prikazuje vrednosti akcelerometra
+   (X, Y, Z). Implementiraj SensorEventListener.
+
+8. SWITCH OFF
+   Sačuvaj sadržaj TextView u SharedPreferences pod ključem "lokacija".
+   Prikaži ime prvog kontakta iz telefonskog imenika u TextView
+   (sortirano po _id ASC).
+
+NAPOMENE
+--------
+- Koristi iste obrasce kao Kolokvijum2 (Retrofit, SQLiteOpenHelper,
+  ActivityResultLauncher, FileProvider za kameru).
+- Kratki komentari na srpskom u kodu.

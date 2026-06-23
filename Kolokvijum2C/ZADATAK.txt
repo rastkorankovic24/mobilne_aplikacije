@@ -1,0 +1,93 @@
+================================================================================
+  KOLOKVIJUM 2 - VARIJANTA C
+  Projekat: Kolokvijum2C
+  Paket: com.example.kolokvijum2c
+================================================================================
+
+API:
+  GET https://dummy-json.mock.beeceptor.com/comments
+
+FileProvider:
+  com.example.kolokvijum2c.fileprovider
+
+
+================================================================================
+  ZADATAK
+================================================================================
+
+1. LAYOUT (activity_main.xml)
+   - TextView za lokaciju (textViewLocation)
+   - ImageButton za kameru
+   - ImageView za sliku
+   - Switch za komentare
+   - Button (buttonAction)
+   - TextView id textViewCount, početni tekst: "Broj: 0"
+
+2. LOKACIJA
+   - Pri pokretanju traži dozvolu i prikaži širinu/dužinu u textViewLocation
+   - Isto kao u Kolokvijum2
+
+3. KAMERA + ŽIROSKOP
+   - ImageButton otvara kameru (FileProvider)
+   - Posle uspešnog slikanja prikaži sliku u ImageView
+   - Toast sa vrednostima žiroskopa (Gyro X, Y, Z)
+   - Isto kao u Kolokvijum2
+
+4. MODEL Comment (Comment.java)
+   Polja: id, postId, name, email, body
+
+5. RETROFIT
+   - CommentService: GET comments
+   - RetrofitClient: baza https://dummy-json.mock.beeceptor.com/
+
+6. BAZA (DatabaseHelper.java)
+   - Tabela comments sa poljima iz modela
+   - insertComments, deleteFirstComment, getCommentCount, getFirstCommentName
+
+7. SWITCH ON
+   - Prvi put (baza prazna): učitaj 10 komentara sa API-ja u bazu
+     Toast: "Učitano X komentara"
+   - Sledeći put ON: Toast sa imenom (name) prvog komentara u bazi
+   - Kad je ON, osveži lokaciju
+
+8. DUGME (buttonAction)
+   - Obriši prvi komentar iz baze
+   - Ažuriraj textViewCount na "Broj: N"
+   - Ako je N = 0, pošalji notifikaciju: "Nema više komentara!"
+   - Tekst dugmeta = vrednosti akcelerometra (X, Y, Z)
+
+9. SWITCH OFF
+   - Sačuvaj trenutni tekst lokacije u SharedPreferences
+     ključ: "poslednja_lokacija"
+   - Prikaži ime prvog kontakta u textViewLocation
+
+10. PERMISIJE (AndroidManifest.xml)
+    - INTERNET, lokacija, kamera, kontakti, notifikacije
+    - FileProvider authorities: com.example.kolokvijum2c.fileprovider
+
+
+================================================================================
+  FAJLOVI U PROJEKTU
+================================================================================
+
+  app/res/layout/activity_main.xml
+  app/src/main/AndroidManifest.xml
+  app/java/.../MainActivity.java
+  app/java/.../Comment.java
+  app/java/.../CommentService.java
+  app/java/.../RetrofitClient.java
+  app/java/.../DatabaseHelper.java
+  app/res/values/strings.xml
+  app/res/xml/file_paths.xml
+
+
+================================================================================
+  REDOSLED TESTIRANJA
+================================================================================
+
+  1. Run → dozvoli lokaciju → vidi koordinate
+  2. Slikaj → vidi sliku i Gyro Toast
+  3. Switch ON → "Učitano 10 komentara", Broj: 10
+  4. Switch OFF → vidi ime kontakta
+  5. Switch ON ponovo → Toast sa imenom prvog komentara
+  6. Klikni dugme 10 puta → Broj pada, na kraju notifikacija

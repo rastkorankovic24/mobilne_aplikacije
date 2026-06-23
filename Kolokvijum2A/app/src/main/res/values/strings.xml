@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kolokvijum2A</string>
+    <string name="location_loading">Učitavanje lokacije...</string>
+    <string name="location_format">Širina: %1$.6f, Dužina: %2$.6f</string>
+    <string name="location_unavailable">Lokacija nije dostupna</string>
+    <string name="location_emulator_hint">Na emulatoru: ⋯ → Location → Set Location, pa restartuj app</string>
+    <string name="take_photo">Slikaj</string>
+    <string name="photo_preview">Pregled fotografije</string>
+    <string name="switch_products">Proizvodi</string>
+    <string name="accelerometer_default">Akcelerometar</string>
+    <string name="accel_format">X: %1$.2f Y: %2$.2f Z: %3$.2f</string>
+    <string name="gyro_format">Gyro X: %1$.2f Y: %2$.2f Z: %3$.2f</string>
+    <string name="no_products_notification">Nema proizvoda!</string>
+    <string name="channel_products">Proizvodi</string>
+    <string name="notification_title">Obaveštenje</string>
+    <string name="camera_permission_denied">Potrebna dozvola za kameru</string>
+    <string name="location_permission_denied">Potrebna dozvola za lokaciju</string>
+    <string name="contacts_permission_denied">Potrebna dozvola za kontakte</string>
+    <string name="notification_permission_denied">Dozvoli notifikacije da vidiš obaveštenje</string>
+    <string name="products_loading">Učitavanje proizvoda...</string>
+    <string name="products_loaded">Učitano %1$d proizvoda u bazu</string>
+    <string name="products_fetch_error">Greška pri učitavanju proizvoda</string>
+    <string name="products_fetch_error_detail">Greška: %1$s (proveri internet)</string>
+    <string name="search_count">Pronađeno: %1$d</string>
+    <string name="location_saved_prefs">Lokacija sačuvana u SharedPreferences</string>
+    <string name="no_contact_found">Nema kontakata</string>
+    <string name="contacts_emulator_hint">Dodaj kontakt: Contacts app na emulatoru → Create contact</string>
+</resources>

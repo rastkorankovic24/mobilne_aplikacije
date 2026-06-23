@@ -1,0 +1,785 @@
+================================================================================
+  KOLOKVIJUM - SABLON ZA MENJANJE
+  Projekt: Kolokvijum2 (pripremni koji ti radi)
+================================================================================
+
+>>> KAKO KORISTITI OVAJ FAJL (PROČITAJ PRVO) <<<
+
+  1. Na kolokvijumu otvoriš Android Studio sa projektom Kolokvijum2
+  2. Otvoriš OVAJ fajl u Notepad-u / pored Studija
+  3. Pročitaš zadatak od profesora (tačka po tačka)
+  4. Pritisneš Ctrl+F i tražiš ključnu reč:
+       - traži "lokaciju"     -> idi na SEKCIJU 7
+       - traži "kameru"       -> idi na SEKCIJU 8
+       - traži "retrofit"     -> idi na SEKCIJU 10
+       - traži "bazu"         -> idi na SEKCIJU 11
+       - traži "switch"       -> idi na SEKCIJU 24 (brzi recepti)
+  5. Kopiraš kod iz sablona u PRAVI fajl u projektu (piše uz svaku sekciju)
+  6. Menjaš samo ono što piše "PROMENI" ili "OBRATI PAŽNJU"
+  7. Run (zeleno dugme) i proveriš da li ta tačka radi pre nego što pređeš dalje
+
+  NE PIŠI SVE OD NULE. Uvek kreni od Kolokvijum2 koji već radi.
+
+
+================================================================================
+  BRZA MAPA - KOJI FAJL ZA ŠTA (zapamti ovo)
+================================================================================
+
+  LEVO U STUDIU (Project)          |  ZA ŠTA SLUŽI
+  ---------------------------------|------------------------------------------
+  app/res/layout/activity_main.xml |  Izgled ekrana - dugmad, tekst, slike
+  app/manifests/AndroidManifest.xml|  Dozvole (kamera, internet, lokacija...)
+  app/java/.../MainActivity.java   |  GLAVNI KOD - sve akcije i logika
+  app/java/.../DatabaseHelper.java |  Baza podataka (SQLite)
+  app/java/.../Post.java           |  Model podataka (polja iz JSON-a)
+  app/java/.../PostService.java    |  Koji API poziv (GET, POST...)
+  app/java/.../RetrofitClient.java |  Adresa servera (URL)
+  app/build.gradle                 |  Biblioteke - dodaješ samo ako treba nova
+  res/values/strings.xml           |  Tekstovi aplikacije
+  res/xml/file_paths.xml           |  Potrebno za kameru (FileProvider)
+
+  >>> U 90% zadataka menjaš: activity_main.xml + MainActivity.java <<<
+  >>> Ako treba internet/baza: i DatabaseHelper + Post + Retrofit fajlove <<<
+
+
+================================================================================
+  SEKCIJA 0 - REDOSLED NA KOLOKVIJUMU (korak po korak)
+================================================================================
+
+  KORAK 1: Pročitaj CELE zadatke (5 min) - ne kreni odmah da kucaš
+  KORAK 2: Uporedi sa Kolokvijum2 - šta već imaš, šta fali
+  KORAK 3: Izmeni XML (layout) - vidiš odmah na emulatoru
+  KORAK 4: Dodaj permisije u Manifest (sekcija 2)
+  KORAK 5: MainActivity - dodaj/meni kod po tačkama zadatka
+  KORAK 6: Sync Gradle (slon ikonica) ako si dodao biblioteku
+  KORAK 7: Run - testiraj SVAKU tačku posebno
+  KORAK 8: Popravi greške (sekcija 25)
+
+
+================================================================================
+  SEKCIJA 1 - GRADLE (biblioteke)
+  FAJL: app/build.gradle  ->  deo "dependencies { ... }"
+  KADA: samo ako zadatak traži nešto novo (lista, mape, itd.)
+  POSLE: klikni "Sync Now" / ikonica slona
+================================================================================
+
+// --- UVEK VEĆ IMAŠ U KOLOKVIJUM2 (ne diraj ako ne treba): ---
+implementation 'androidx.appcompat:appcompat:1.6.1'
+implementation 'com.google.android.material:material:1.11.0'
+implementation 'com.squareup.retrofit2:retrofit:2.9.0'              // internet API
+implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+implementation 'com.google.android.gms:play-services-location:21.1.0' // lokacija
+
+// --- DODAJ SAMO AKO ZADATAK TRAŽI: ---
+
+// LISTA (RecyclerView) - ako traže prikaz liste proizvoda/postova:
+implementation 'androidx.recyclerview:recyclerview:1.3.2'
+
+// FRAGMENTI / NAVIGATION - ako traže više ekrana unutar app:
+implementation 'androidx.navigation:navigation-fragment:2.7.7'
+implementation 'androidx.navigation:navigation-ui:2.7.7'
+
+// VIEWMODEL - ako traže pretragu/filter sa LiveData:
+implementation 'androidx.lifecycle:lifecycle-viewmodel:2.7.0'
+implementation 'androidx.lifecycle:lifecycle-livedata:2.7.0'
+
+// GOOGLE MAPA:
+implementation 'com.google.android.gms:play-services-maps:18.2.0'
+
+// OPENSTREET MAPA (OSMDroid):
+implementation 'org.osmdroid:osmdroid-android:6.1.18'
+
+// VIEWBINDING - stavi u android { } blok, NE u dependencies:
+// viewBinding true
+
+
+================================================================================
+  SEKCIJA 2 - PERMISIJE (dozvole)
+  FAJL: app/src/main/AndroidManifest.xml
+  GDE: IZNAD taga <application ...>
+  KADA: uvek kad zadatak koristi kameru/lokaciju/internet/kontakte/zvuk
+  VAŽNO: u Manifest stavi dozvolu + u MainActivity traži od korisnika (sekcija 6)
+================================================================================
+
+<!-- INTERNET - obavezno za Retrofit/API -->
+<uses-permission android:name="android.permission.INTERNET" />
+
+<!-- LOKACIJA - za prikaz koordinata -->
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+<!-- KAMERA - za slikanje -->
+<uses-permission android:name="android.permission.CAMERA" />
+
+<!-- KONTAKTI - za čitanje imena iz Contacts app -->
+<uses-permission android:name="android.permission.READ_CONTACTS" />
+
+<!-- ZVUK - za snimanje audio -->
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+<!-- NOTIFIKACIJE - Android 13+ -->
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+// --- FILE PROVIDER (KAMERA) - stavi UNUTAR <application>, ne iznad ---
+// Kolokvijum2 ovo VEĆ IMA - ne diraj osim ako menjaš package name
+<provider
+    android:name="androidx.core.content.FileProvider"
+    android:authorities="com.example.kolokvijum2.fileprovider"
+    android:exported="false"
+    android:grantUriPermissions="true">
+    <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/file_paths" />
+</provider>
+
+// --- NOVA AKTIVNOST - ako praviš SecondActivity ---
+<activity android:name=".SecondActivity" android:exported="false" />
+
+// --- SERVIS - retko na kolokvijumu (vežba 5) ---
+<service android:name=".SyncService" android:exported="false" />
+
+
+================================================================================
+  SEKCIJA 3 - LAYOUT (izgled ekrana)
+  FAJL: app/res/layout/activity_main.xml
+  KADA: kad zadatak kaže "postavi TextView, Button..." ili "jedno ispod drugog"
+  VAŽNO: android:id="@+id/ime" mora se poklapati sa findViewById u MainActivity
+================================================================================
+
+// --- VERTIKALNI RASPORED (najčešće na kolokvijumu, kao Kolokvijum2) ---
+// orientation="vertical" = elementi jedan ISPOD drugog
+// android:id = ime koje koristiš u Java kodu - PROMENI po zadatku ali mora biti isto u oba fajla
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- TEKST - prikaz lokacije, naslova, poruke -->
+    <TextView
+        android:id="@+id/textViewLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tekst ovde" />
+
+    <!-- POLJE ZA UNOS - ako traže da korisnik nešto ukuca -->
+    <EditText
+        android:id="@+id/editTextInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Unesite tekst" />
+
+    <!-- DUGME SA SLIKOM - kamera -->
+    <ImageButton
+        android:id="@+id/imageButtonCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_menu_camera"
+        android:contentDescription="Kamera" />
+
+    <!-- PRIKAZ SLIKE - posle slikanja -->
+    <ImageView
+        android:id="@+id/imageViewPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop" />
+
+    <!-- PREKIDAČ ON/OFF -->
+    <Switch
+        android:id="@+id/switchPosts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Postovi" />
+
+    <!-- CHECKBOX - više izbora -->
+    <CheckBox
+        android:id="@+id/checkBox1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Opcija" />
+
+    <!-- RADIO - jedan izbor od više -->
+    <RadioButton
+        android:id="@+id/radioButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Izbor 1" />
+
+    <!-- PADAJUĆA LISTA -->
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- OBIČNO DUGME -->
+    <Button
+        android:id="@+id/buttonAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dugme" />
+
+    <!-- LISTA (RecyclerView) - ako traže scroll listu -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
+
+// --- FRAGMENT KONTEJNER - samo ako traže fragment unutar activity ---
+<FrameLayout
+    android:id="@+id/fragment_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+
+================================================================================
+  SEKCIJA 4 - MAINACTIVITY OSNOVA
+  FAJL: MainActivity.java
+  OVO JE SRCE APLIKACIJE - ovde ide većina logike
+================================================================================
+
+public class MainActivity extends AppCompatActivity {
+
+    // --- POLJA - povezuju se sa elementima iz XML-a ---
+    // PROMENI imena da odgovaraju tvom android:id iz activity_main.xml
+    private TextView textViewLocation;
+    private Button buttonAction;
+    private Switch switchPosts;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Učitava layout (activity_main.xml)
+        setContentView(R.layout.activity_main);
+
+        // Povezuje Java promenljive sa elementima na ekranu
+        // R.id.xxx MORA biti isto kao android:id u XML-u !!!
+        textViewLocation = findViewById(R.id.textViewLocation);
+        buttonAction = findViewById(R.id.buttonAction);
+        switchPosts = findViewById(R.id.switchPosts);
+
+        // --- KLIK NA DUGME ---
+        buttonAction.setOnClickListener(v -> {
+            // OVDE ide kod kad korisnik klikne dugme
+            // npr. brisanje iz baze, otvaranje kamere...
+        });
+
+        // --- SWITCH ON/OFF ---
+        switchPosts.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Switch uključen (ON)
+            } else {
+                // Switch isključen (OFF)
+            }
+        });
+    }
+}
+
+
+================================================================================
+  SEKCIJA 5 - DRUGA AKTIVNOST (novi ekran)
+  KADA: "pređi na drugi ekran", "SecondActivity", slanje podataka
+  NOVI FAJLOVI: SecondActivity.java + activity_second.xml + unos u Manifest
+================================================================================
+
+// --- PRELAZAK NA DRUGI EKRAN ---
+Intent intent = new Intent(this, SecondActivity.class);
+startActivity(intent);
+
+// --- POŠALJI PODATAK U DRUGI EKRAN ---
+intent.putExtra("kljuc", "vrednost");   // tekst
+intent.putExtra("broj", 123);           // broj
+startActivity(intent);
+
+// --- PRIMI PODATAK (u SecondActivity, u onCreate) ---
+String vrednost = getIntent().getStringExtra("kljuc");
+int broj = getIntent().getIntExtra("broj", 0);  // 0 = podrazumevano ako nema
+
+// --- OTVORI SAJT U BROWSERU (implicitni Intent) ---
+Intent browser = new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com"));
+startActivity(browser);
+
+
+================================================================================
+  SEKCIJA 6 - DINAMIČKE DOZVOLE (korisnik mora da odobri)
+  FAJL: MainActivity.java
+  KADA: pre kamere, lokacije, kontakata, notifikacija
+  LOGIKA: prvo proveri ima li dozvolu -> ako nema, pitaj korisnika
+================================================================================
+
+// --- KORAK A: na vrh klase (pored drugih polja) dodaj launcher ---
+// PROMENI: unutar if(granted) pozovi funkciju koju ti treba (kamera, lokacija...)
+private final ActivityResultLauncher<String> permissionLauncher =
+    registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+        if (granted) {
+            openCamera();  // PROMENI: loadLocation() ili showContacts()...
+        } else {
+            Toast.makeText(this, "Dozvola odbijena", Toast.LENGTH_SHORT).show();
+        }
+    });
+
+// --- KORAK B: pre nego koristiš kameru/lokaciju, proveri ---
+if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+        == PackageManager.PERMISSION_GRANTED) {
+    // IMA dozvolu - radi akciju
+    openCamera();
+} else {
+    // NEMA - pitaj korisnika
+    permissionLauncher.launch(Manifest.permission.CAMERA);
+}
+
+// --- KOJA DOZVOLA ZA ŠTA ---
+// Manifest.permission.CAMERA              -> kamera
+// Manifest.permission.ACCESS_FINE_LOCATION -> lokacija
+// Manifest.permission.READ_CONTACTS        -> kontakti
+// Manifest.permission.RECORD_AUDIO         -> snimanje zvuka
+// Manifest.permission.POST_NOTIFICATIONS   -> notifikacije (Android 13+)
+
+
+================================================================================
+  SEKCIJA 7 - LOKACIJA (širina i dužina u TextView)
+  FAJL: MainActivity.java
+  KADA: "prikaži lokaciju uređaja", "geografska širina i dužina"
+  TREBA: permisija u Manifest + sekcija 6 + build.gradle location biblioteka
+  EMULATOR: ⋯ -> Location -> Set Location (npr. 44.8176, 20.4633)
+================================================================================
+
+// --- POLJE u klasi ---
+private FusedLocationProviderClient fusedLocationClient;
+
+// --- u onCreate ---
+fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+// pozovi loadLocation() posle što korisnik odobri dozvolu
+
+// --- METODA loadLocation() - kopiraj celu ---
+private void loadLocation() {
+    CancellationTokenSource token = new CancellationTokenSource();
+    fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, token.getToken())
+        .addOnSuccessListener(location -> {
+            if (location != null) {
+                // PROMENI format teksta ako zadatak traži drugačije
+                textViewLocation.setText(
+                    "Širina: " + location.getLatitude()
+                    + ", Dužina: " + location.getLongitude());
+            } else {
+                textViewLocation.setText("Lokacija nije dostupna");
+            }
+        });
+}
+
+// --- IMPORTI (dodaj na vrh MainActivity.java ako crveni) ---
+// import com.google.android.gms.location.*;
+// import com.google.android.gms.tasks.CancellationTokenSource;
+
+
+================================================================================
+  SEKCIJA 8 - KAMERA (slikanje u ImageView)
+  FAJL: MainActivity.java + res/xml/file_paths.xml + Manifest FileProvider
+  KADA: "pokreni kameru", "prikaži fotografiju u ImageView"
+  Kolokvijum2 OVO VEĆ IMA - kopiraj odatle ako treba
+================================================================================
+
+// --- POLJA ---
+private Uri photoUri;
+private File photoFile;
+private static final String AUTHORITY = "com.example.kolokvijum2.fileprovider";
+
+// --- LAUNCHER - poziva se kad se kamera zatvori ---
+private final ActivityResultLauncher<Intent> cameraLauncher =
+    registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == RESULT_OK) {
+            imageViewPhoto.setImageURI(photoUri);  // prikaži sliku
+            // OVDE možeš dodati Toast (npr. sa žiroskopom - sekcija 9)
+        }
+    });
+
+// --- METODA openCamera() - poziva se na klik ImageButton ---
+private void openCamera() throws IOException {
+    photoFile = File.createTempFile("IMG_", ".jpg",
+        getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+    photoUri = FileProvider.getUriForFile(this, AUTHORITY, photoFile);
+
+    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+    intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+    cameraLauncher.launch(intent);
+}
+
+// --- file_paths.xml (res/xml/) - Kolokvijum2 već ima ---
+<paths>
+    <external-files-path name="images" path="Pictures/" />
+</paths>
+
+
+================================================================================
+  SEKCIJA 9 - SENZORI (akcelerometar, žiroskop)
+  FAJL: MainActivity.java
+  KADA: "vrednosti akcelerometra na dugmetu", "Toast sa žiroskopom"
+  VAŽNO: klasa mora implements SensorEventListener
+          registerListener u onResume, unregister u onPause
+================================================================================
+
+// --- NA VRHU KLASE dodaj: implements SensorEventListener ---
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
+
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private Sensor gyroscope;
+    private float gyroX, gyroY, gyroZ;  // čuvamo za Toast posle slike
+
+    // --- onCreate ---
+    sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+    accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+    gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+    // --- onResume (OBAVEZNO - senzor radi dok je app otvoren) ---
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    // --- onPause (OBAVEZNO - gasi senzor da ne troši bateriju) ---
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
+
+    // --- kad senzor pošalje novu vrednost ---
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            // AKCelerometar -> tekst na DUGMETU (real time)
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+            buttonAction.setText("X: " + x + " Y: " + y + " Z: " + z);
+        } else if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            // Žiroskop -> samo sačuvaj, koristi u Toast posle slike
+            gyroX = event.values[0];
+            gyroY = event.values[1];
+            gyroZ = event.values[2];
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) { }
+}
+
+// --- Toast posle slike (u cameraLauncher, posle setImageURI) ---
+Toast.makeText(this,
+    "Gyro X: " + gyroX + " Y: " + gyroY + " Z: " + gyroZ,
+    Toast.LENGTH_LONG).show();
+
+
+================================================================================
+  SEKCIJA 10 - RETROFIT (podaci sa interneta)
+  FAJLOVI: PostService.java, RetrofitClient.java, Post.java, MainActivity.java
+  KADA: "GET zahtev", "učitaj sa sajta", "mock API"
+================================================================================
+
+// ===== PostService.java - DEFINIŠE KOJI POZIV =====
+// PROMENI "posts" ako API ima drugu putanju (npr. "users", "products")
+public interface PostService {
+    @GET("posts")
+    Call<List<Post>> getPosts();
+
+    @GET("posts/{id}")
+    Call<Post> getById(@Path("id") int id);
+
+    @POST("posts")
+    Call<Post> add(@Body Post post);
+}
+
+// ===== RetrofitClient.java - ADRESA SERVERA =====
+// PROMENI BASE_URL na adresu iz zadatka
+// OBAVEZNO: URL mora da se završi sa /
+private static final String BASE_URL = "https://dummy-json.mock.beeceptor.com/";
+
+retrofit = new Retrofit.Builder()
+    .baseUrl(BASE_URL)
+    .addConverterFactory(GsonConverterFactory.create())
+    .build();
+
+// ===== Post.java - MODEL (polja iz JSON-a) =====
+// PROMENI polja da odgovaraju JSON-u sa API-ja
+// Ako JSON ima "comment_count", koristi @SerializedName
+public class Post {
+    private int id;
+    private String title;
+    private String body;
+    @SerializedName("comment_count")
+    private int commentCount;
+    // getteri za sva polja...
+}
+
+// ===== MainActivity - POZIV (asinhrono - ne blokira ekran) =====
+// u onCreate: postService = RetrofitClient.getPostService();
+
+postService.getPosts().enqueue(new Callback<List<Post>>() {
+    @Override
+    public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+        if (response.isSuccessful() && response.body() != null) {
+            List<Post> lista = response.body();
+            // OVDE: sačuvaj u bazu, prikaži u listi, uzmi prvih 10...
+            // npr: dbHelper.insertPosts(lista.subList(0, 10));
+        }
+    }
+    @Override
+    public void onFailure(Call<List<Post>> call, Throwable t) {
+        Toast.makeText(MainActivity.this, "Greška: " + t.getMessage(), Toast.LENGTH_LONG).show();
+    }
+});
+
+
+================================================================================
+  SEKCIJA 11 - SQLITE BAZA
+  FAJL: DatabaseHelper.java
+  KADA: "upiši u bazu", "obriši prvi red", "prvi post u tabeli"
+  VAŽNO ZA ZADATKE:
+    "prvi u tabeli" = ORDER BY _id ASC LIMIT 1  (NE id=1 iz API-ja!)
+    _id = redni broj unosa u NAŠOJ bazi
+================================================================================
+
+// --- KREIRANJE TABELE (onCreate u DatabaseHelper) ---
+// PROMENI nazive kolona po modelu iz zadatka
+db.execSQL("CREATE TABLE posts (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+    + "title TEXT, body TEXT)");
+
+// --- INSERT (ubacivanje) ---
+ContentValues values = new ContentValues();
+values.put("title", "Naslov");
+values.put("body", "Tekst");
+db.insert("posts", null, values);
+
+// --- PRVI RED U TABELI ---
+// Koristi za: "title prvog posta u bazi"
+db.query("posts", null, null, null, null, null, "_id ASC", "1");
+
+// --- KOLIKO IMA REDOVA ---
+db.rawQuery("SELECT COUNT(*) FROM posts", null);
+// ako je 0 -> baza prazna
+
+// --- OBRIŠI PRVI RED ---
+// 1) nađi _id prvog reda (query gore)
+// 2) db.delete("posts", "_id=?", new String[]{String.valueOf(rowId)});
+
+// Kolokvijum2 već ima gotove metode:
+// dbHelper.insertPosts(lista);
+// dbHelper.getFirstPostTitle();
+// dbHelper.deleteFirstPost();
+// dbHelper.getPostCount();
+
+
+================================================================================
+  SEKCIJA 12 - SHAREDPREFERENCES (trajno čuvanje malih podataka)
+  FAJL: MainActivity.java
+  KADA: "sačuvaj u polje tekst", "podešavanja"
+================================================================================
+
+// --- SAČUVAJ (npr. kad Switch ide OFF) ---
+SharedPreferences prefs = getSharedPreferences("ImeFajla", MODE_PRIVATE);
+prefs.edit().putString("tekst", textViewLocation.getText().toString()).apply();
+// PROMENI "tekst" na ključ iz zadatka
+// PROMENI "ImeFajla" na bilo koje ime fajla
+
+// --- PROČITAJ kasnije ---
+String sacuvano = prefs.getString("tekst", "podrazumevano");
+
+
+================================================================================
+  SEKCIJA 13 - KONTAKTI (prvo ime iz Contacts app)
+  FAJL: MainActivity.java
+  KADA: "ime prvog kontakta", Switch OFF + zameni TextView
+  TREBA: READ_CONTACTS u Manifest + sekcija 6
+  EMULATOR: Contacts app -> Create contact (inače "Nema kontakata")
+================================================================================
+
+Cursor cursor = getContentResolver().query(
+    ContactsContract.Contacts.CONTENT_URI,
+    new String[]{ContactsContract.Contacts.DISPLAY_NAME},
+    null, null,
+    ContactsContract.Contacts._ID + " ASC"   // ASC = prvi kontakt
+);
+if (cursor != null && cursor.moveToFirst()) {
+    String ime = cursor.getString(0);
+    textViewLocation.setText(ime);   // PROMENI textView ako zadatak kaže drugi element
+    cursor.close();
+}
+
+
+================================================================================
+  SEKCIJA 14 - TOAST / DIJALOG / SPINNER
+  FAJL: MainActivity.java (+ arrays.xml za Spinner)
+================================================================================
+
+// --- TOAST - kratka poruka na dnu ekrana (najčešće) ---
+Toast.makeText(this, "Poruka korisniku", Toast.LENGTH_SHORT).show();
+Toast.makeText(this, title, Toast.LENGTH_LONG).show();  // duže traje
+
+// --- DIJALOG - prozor sa Da/Ne ---
+new AlertDialog.Builder(this)
+    .setTitle("Naslov")
+    .setMessage("Da li ste sigurni?")
+    .setPositiveButton("Da", (d, w) -> { /* uradi akciju */ })
+    .setNegativeButton("Ne", null)
+    .show();
+
+// --- SPINNER - res/values/arrays.xml ---
+<string-array name="opcije">
+    <item>Prva</item>
+    <item>Druga</item>
+</string-array>
+
+// --- SPINNER - u MainActivity ---
+ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+    R.array.opcije, android.R.layout.simple_spinner_item);
+adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+spinner.setAdapter(adapter);
+
+
+================================================================================
+  SEKCIJA 15 - NOTIFIKACIJE
+  FAJL: MainActivity.java
+  KADA: "pošalji notifikaciju", "Nema više postova"
+  TREBA: POST_NOTIFICATIONS dozvolu (Android 13+)
+================================================================================
+
+// --- JEDNOM u onCreate - kreiraj kanal ---
+if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    NotificationChannel channel = new NotificationChannel(
+        "channel_id", "Naziv", NotificationManager.IMPORTANCE_DEFAULT);
+    getSystemService(NotificationManager.class).createNotificationChannel(channel);
+}
+
+// --- POŠALJI notifikaciju ---
+NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channel_id")
+    .setSmallIcon(android.R.drawable.ic_dialog_info)
+    .setContentTitle("Obaveštenje")
+    .setContentText("Nema više postova!")   // PROMENI tekst iz zadatka
+    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+getSystemService(NotificationManager.class).notify(1, builder.build());
+
+
+================================================================================
+  SEKCIJA 16 - RECYCLERVIEW (lista koja skroluje)
+  KADA: "prikaži listu proizvoda/postova"
+  FAJLOVI: item_layout.xml + Adapter klasa + MainActivity
+================================================================================
+
+// U activity_main.xml dodaj RecyclerView (sekcija 3)
+// Napravi item_row.xml - izgled JEDNOG reda u listi
+
+recyclerView.setLayoutManager(new LinearLayoutManager(this));
+recyclerView.setAdapter(new MojAdapter(listaPodataka));
+
+// Adapter = klasa koja kaže "za svaki red u listi, prikaži ovo"
+// Kopiraj iz GitLab vežbe 4 ili Kolokvijum2 ako dodaš listu
+
+
+================================================================================
+  SEKCIJA 17-23 - RETKO NA KOLOKVIJUMU (fragment, servis, mape, zvuk)
+  Koristi samo ako zadatak EKSPLICITNO traži - inače preskoči
+================================================================================
+
+  17 Fragment     -> novi ekran unutar iste activity (FrameLayout)
+  18 ViewBinding   -> umesto findViewById (Kolokvijum2 koristi findViewById - OK)
+  19 ViewModel    -> filter/pretraga sa LiveData
+  20 Servis       -> rad u pozadini (vežba 5)
+  21 Broadcast    -> slanje poruka između delova app (vežba 5)
+  22 MediaRecorder-> snimanje zvuka (vežba 9)
+  23 Timer        -> splash screen posle 3 sek (vežba 5)
+
+
+================================================================================
+  SEKCIJA 24 - BRZI RECEPTI (NAJVAŽNIJE ZA TEBE!)
+  Nađi zadatak sličan svom -> kopiraj iz navedenih sekcija
+================================================================================
+
+  ZADATAK: TextView sa lokacijom (lat/lon)
+    -> Sekcija 7 + Manifest lokacija + sekcija 6
+
+  ZADATAK: Kamera -> slika u ImageView
+    -> Sekcija 8 (Kolokvijum2 već ima)
+
+  ZADATAK: Toast sa žiroskopom posle slike
+    -> Sekcija 9, Toast u cameraLauncher
+
+  ZADATAK: GET sa API-ja, model, Retrofit
+    -> Sekcija 10 (Post, PostService, RetrofitClient)
+
+  ZADATAK: Switch ON prvi put -> učitaj 10 u bazu
+    -> Sekcija 10 poziv + dbHelper.insertPosts()
+    -> u Switch listeneru:
+         if (dbHelper.getPostCount() == 0) {
+             fetchAndSavePosts();   // poziv API-ja
+         } else {
+             Toast.makeText(this, dbHelper.getFirstPostTitle(), ...).show();
+         }
+
+  ZADATAK: Switch OFF -> sačuvaj TextView u SharedPreferences "tekst"
+    -> Sekcija 12 + sekcija 13 (kontakt u TextView)
+
+  ZADATAK: Button prikazuje akcelerometar, KLIK briše prvi iz baze
+    -> Sekcija 9 (setText u onSensorChanged)
+    -> buttonAction.setOnClickListener -> dbHelper.deleteFirstPost()
+
+  ZADATAK: Prazna baza -> notifikacija "Nema više postova!"
+    -> if (dbHelper.getPostCount() == 0) sendNotifikacija();  // sekcija 15
+
+  ZADATAK: Lista sa interneta
+    -> Sekcija 10 + 16
+
+  ZADATAK: Dva ekrana + slanje podataka
+    -> Sekcija 5
+
+
+================================================================================
+  SEKCIJA 25 - GREŠKE I REŠENJA
+================================================================================
+
+  Crveno R.id.nešto u Java
+    -> android:id u XML nije isto ime kao u findViewById
+
+  Gradle greška (Cannot mutate dependencies...)
+    -> ne upgrade-uj Gradle na 9; ostavi 8.11 iz Kolokvijum2
+
+  Lokacija "nije dostupna"
+    -> emulator: ⋯ -> Location -> Set; dozvoli permisiju
+
+  API / Retrofit greška
+    -> internet na emulatoru? BASE_URL sa / na kraju?
+
+  "Nema kontakata"
+    -> normalno na praznom emulatoru; dodaj kontakt u Contacts app
+
+  Kamera crash
+    -> proveri FileProvider u Manifest + file_paths.xml
+
+  Notifikacija se ne vidi
+    -> dozvoli POST_NOTIFICATIONS (Android 13+)
+
+  Ništa se ne dešava na Switch
+    -> dodaj Toast da vidiš da li listener radi; proveri internet za API
+
+
+================================================================================
+  SEKCIJA 26 - CHECKLIST PRE PREDAJE
+================================================================================
+
+  [ ] Svaka tačka zadatka testirana na emulatoru/telefonu
+  [ ] Dozvole odobrene (kamera, lokacija, kontakti...)
+  [ ] Nema crvenih grešaka u kodu (Build uspešan)
+  [ ] ID-jevi u XML i Java se poklapaju
+  [ ] Za "prvi u bazi" koristiš _id ASC, ne API id=1
+
+
+================================================================================
+  KRAJ - Ctrl+F je tvoj prijatelj. Kolokvijum2 je tvoja baza. Srećno!
+================================================================================
