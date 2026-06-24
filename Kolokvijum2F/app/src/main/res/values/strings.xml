@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kolokvijum2F</string>
+    <string name="checkbox_stop_recording">Zaustavi snimanje</string>
+    <string name="checkbox_countries">Države</string>
+    <string name="button_snimi">Snimi</string>
+    <string name="location_loading">Učitavanje lokacije…</string>
+    <string name="location_format">Širina: %1$.6f, Dužina: %2$.6f</string>
+    <string name="location_unavailable">Lokacija nije dostupna</string>
+    <string name="location_permission_denied">Dozvola za lokaciju odbijena</string>
+    <string name="audio_permission_denied">Dozvola za mikrofon odbijena</string>
+    <string name="recording_started">Snimanje je počelo</string>
+    <string name="recording_saved">Zvuk je sačuvan</string>
+    <string name="recording_error">Greška pri snimanju</string>
+    <string name="countries_loading">Učitavanje država…</string>
+    <string name="countries_loaded">Učitano %1$d država</string>
+    <string name="countries_fetch_error">Greška pri učitavanju država</string>
+    <string name="countries_remaining">Ostalo država u bazi: %1$d</string>
+    <string name="proximity_waiting">Proximity senzor…</string>
+    <string name="proximity_format">Proximity: %1$.2f cm</string>
+    <string name="proximity_unavailable">Proximity senzor nije dostupan</string>
+</resources>

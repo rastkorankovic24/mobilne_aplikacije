@@ -1,0 +1,10 @@
+Zadaci Kolokvijum2F
+
+1. Kreirati novi projekat pod nazivom Kolokvijum2. Glavnu aktivnost nazvati MainActivity.
+2. Unutar MainActivity postaviti dva Checkbox-a, Button i dva TextView-a jedno ispod drugoga. Button ima tekst "Snimi".
+3. Unutar prvog TextView-a prikazati lokaciju uređaja koristeći geografsku širinu i dužinu.
+4. Klikom na Button pokreće se snimanje zvuka i onemogućava ponovni klik na dugme. Klikom na prvi Checkbox snimanje se zaustavlja i snimljen zvuk se čuva u files direktorijumu aplikacije. Takođe, klik na dugme ponovo se omogućava.
+5. Kreirati model u bazi za države sa sajta https://app.beeceptor.com/mock-server/dummy-json i podesiti Retrofit za GET zahtev.
+6. Klikom na drugi Checkbox dobaviti sve države i sačuvati ih u bazi.
+7. Svaki naredni put kada se Checkbox čekira, brisati poslednju državu iz baze i u Toast poruci prikazati koliko je država ostalo u bazi.
+8. U drugom TextView-u prikazati očitavanje proximity senzora.

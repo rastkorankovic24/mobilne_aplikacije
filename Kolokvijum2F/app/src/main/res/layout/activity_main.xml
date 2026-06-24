@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <CheckBox
+        android:id="@+id/checkBoxStopRecording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/checkbox_stop_recording" />
+
+    <CheckBox
+        android:id="@+id/checkBoxCountries"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/checkbox_countries" />
+
+    <Button
+        android:id="@+id/buttonSnimi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_snimi" />
+
+    <TextView
+        android:id="@+id/textViewLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/location_loading"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textViewProximity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/proximity_waiting"
+        android:textSize="16sp" />
+
+</LinearLayout>

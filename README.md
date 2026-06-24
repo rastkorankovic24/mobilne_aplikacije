@@ -9,6 +9,7 @@
 | **Kolokvijum2B** | Korisnici + CheckBox, briše poslednji | Vežba uslova + drugačije brisanje |
 | **Kolokvijum2C** | Komentari + brojač (Broj: N) | Vežba dodatnog TextView-a |
 | **Kolokvijum2D** | Najbliži originalu (5 postova, long click) | Prva probna varijanta |
+| **Kolokvijum2F** | Zvuk, države API, proximity senzor | Kolokvijum zadatak F |
 
 Svaki projekat ima fajl **ZADATAK.txt** sa opisom zadatka na srpskom.
 
@@ -25,5 +26,6 @@ Android Studio → File → Open → izaberi folder (npr. Kolokvijum2A) → Sync
 - Postovi: `https://dummy-json.mock.beeceptor.com/posts`
 - Korisnici: `https://dummy-json.mock.beeceptor.com/users`
 - Komentari: `https://dummy-json.mock.beeceptor.com/comments`
+- Države: `https://dummy-json.mock.beeceptor.com/countries`
 
 *Napomena: Varijanta A koristi endpoint `posts` jer beeceptor nema `/products` — polja se mapiraju u model Product.*
