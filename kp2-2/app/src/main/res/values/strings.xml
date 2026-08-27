@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Popravni Kolokvijum</string>
+    <string name="checkbox_stop_recording">Dobavi sve kontinente</string>
+    <string name="checkbox_countries">Prikaz svih sacuvanih kontinenata</string>
+    <string name="location_loading">Učitavanje lokacije…</string>
+    <string name="location_format">Širina: %1$.6f, Dužina: %2$.6f</string>
+    <string name="location_unavailable">Lokacija nije dostupna</string>
+    <string name="location_permission_denied">Dozvola za lokaciju odbijena</string>
+    <string name="audio_permission_denied">Dozvola za mikrofon odbijena</string>
+    <string name="take_photo">Slikaj</string>
+    <string name="photo_preview">Pregled fotografije</string>
+    <string name="camera_permission_denied">Potrebna dozvola za kameru</string>
+    <string name="recording_saved">Zvuk je sačuvan</string>
+    <string name="recording_error">Greška pri snimanju</string>
+    <string name="countries_loading">Prikaz svih sacuvanih kontinenata</string>
+    <string name="countries_loaded">Učitano %1$d kontinenata</string>
+    <string name="countries_fetch_error">Greška pri učitavanju kontinenata</string>
+    <string name="countries_remaining">Ostalo država u bazi: %1$d</string>
+    <string name="proximity_waiting">Proximity senzor…</string>
+    <string name="proximity_format">Proximity: %1$.2f cm</string>
+    <string name="proximity_unavailable">Proximity senzor nije dostupan</string>
+</resources>
