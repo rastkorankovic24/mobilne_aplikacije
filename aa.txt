@@ -1,0 +1,6 @@
+radim projekat iz mobilnih aplikacija u android studio,language
+java dole groovy dsl,ime projekta je popravni,evo ti zadatak sada
+saljem u sledecoj poruci,od tebe trazim da mi uradis komplet sve da je
+ispravno i da radi kada mi posaljes kod i ja ubacim u andorid studio i
+pokrenem,kod da ne bude previse tezak kao da ga je student radio i bez
+komentara u kodu,ali mi napisi iznad koda gore sta pravim kako se zove koji fajl
